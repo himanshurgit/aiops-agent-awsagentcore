@@ -1,7 +1,8 @@
 """The system prompt - the agent's job description.
 
-In Bedrock Agents this text lived in a console field called "Instructions for
-the Agent". Here it is source code: reviewable, diffable, testable.
+This is the standing brief the model reads before every turn: what it is for,
+which tools it has, and how it must behave around dangerous ones. Keeping it in
+source control means it is reviewable, diffable, and testable like any code.
 """
 
 import config

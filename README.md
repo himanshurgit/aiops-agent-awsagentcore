@@ -1,18 +1,18 @@
 # AIOps Agent on Amazon Bedrock AgentCore
 
-An AWS operations assistant — CloudTrail monitoring plus safe EC2 management —
-built on **Amazon Bedrock AgentCore**, with three explained Jupyter notebooks.
+An **AIOps agent** you can talk to in plain English: *"what's been happening in my
+AWS account?"*, *"which instances are running?"*, *"stop the staging server"*. It
+reads real CloudTrail history, lists real EC2 instances, and refuses to do anything
+dangerous.
 
-This is the rebuild of the original [Bedrock Agents version](https://github.com/himanshurgit/aiops-agent),
-which used a service that entered **maintenance mode** and closed to new customers
-on **30 July 2026**. AWS's recommended path is AgentCore, so the demo moved.
+Built on **Amazon Bedrock AgentCore** with the **Strands Agents** SDK, and taught
+through three Jupyter notebooks that explain every line.
 
 Part of **[AI Fundamentals for Beginners: Learn LLM, Agentic AI & MCP](https://www.udemy.com/course/ai-fundamentals-for-beginners-learn-llm-agentic-ai-mcp/?referralCode=4D49F0BFDF7A68F7CF22)**.
 
-> **Migrating from the old build?** Jump to [Migration reference](#migration-reference).
-> The original Bedrock Agents version is preserved at
-> [himanshurgit/aiops-agent](https://github.com/himanshurgit/aiops-agent) — reading
-> the two side by side is the clearest way to see what actually changed.
+> **New to agents?** Start at notebook 01 and work through in order. You need an AWS
+> account and about 90 minutes. An EC2 instance is optional — the agent ships in
+> dry-run mode.
 
 ---
 
@@ -22,7 +22,7 @@ Work through them in order. Together they take about 90 minutes.
 
 | Notebook | What it covers | Runs where |
 | --- | --- | --- |
-| [`01_concepts_and_setup.ipynb`](notebooks/01_concepts_and_setup.ipynb) | What changed and why, the old→new migration map, environment setup, model access | Local |
+| [`01_concepts_and_setup.ipynb`](notebooks/01_concepts_and_setup.ipynb) | What an agent is, what AgentCore gives you, environment setup, model access | Local |
 | [`02_build_and_test_locally.ipynb`](notebooks/02_build_and_test_locally.ipynb) | The agent loop, `@tool` functions, the system prompt, three layers of safety, first real runs | Local, against real AWS |
 | [`03_deploy_to_agentcore_runtime.ipynb`](notebooks/03_deploy_to_agentcore_runtime.ipynb) | The AgentCore entrypoint, the CLI, deploy, IAM scoping, observability, Memory & Gateway, cleanup | AWS |
 
@@ -174,30 +174,8 @@ deployed agent costs nothing. Notebook 03 ends with a teardown — please run it
 
 ---
 
-## Migration reference
-<a id="migration-reference"></a>
-
-| Bedrock Agents (Classic) | AgentCore |
-| --- | --- |
-| Console "Instructions for the Agent" | `prompts.py` |
-| Action group + OpenAPI JSON schema | `@tool` function — hints and docstring **are** the schema |
-| One Lambda per action group | Plain functions in the agent process (or keep the Lambdas behind Gateway) |
-| `messageVersion` / `apiPath` response envelope | `return {...}` |
-| AWS-owned orchestration loop | Strands loop, in your process |
-| Prepare / versions / aliases | `agentcore deploy` |
-| `bedrock-agent-runtime:InvokeAgent` | Runtime endpoint, `POST /invocations` |
-| Managed session state | Session-isolated microVM + AgentCore Memory |
-| CloudWatch logs | AgentCore Observability — traces and spans |
-
-Already have a large Lambda-backed estate? **AgentCore Gateway** exposes existing
-Lambda functions and OpenAPI specs as MCP tools without rewriting them — covered
-in notebook 03, section 10.
-
----
-
 ## References
 
 - [Get started with Amazon Bedrock AgentCore](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agentcore-get-started-cli.html)
-- [Bedrock Agents Classic maintenance mode](https://docs.aws.amazon.com/bedrock/latest/userguide/agents-classic-maintenance-mode.html)
 - [AgentCore CLI](https://github.com/aws/agentcore-cli) · [AgentCore Python SDK](https://github.com/aws/bedrock-agentcore-sdk-python)
 - [Strands Agents SDK](https://strandsagents.com) · [AgentCore samples](https://github.com/awslabs/amazon-bedrock-agentcore-samples)

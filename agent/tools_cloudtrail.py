@@ -1,9 +1,8 @@
 """Read-only CloudTrail tools.
 
-In the old Bedrock Agents build these were Lambda functions behind an OpenAPI
-schema. Here they are plain Python functions with an @tool decorator: the
-function signature and docstring ARE the schema the model sees, so there is no
-separate JSON file to keep in sync.
+Each of these is a plain Python function wearing an @tool decorator. The
+signature and the docstring ARE the schema the model sees, so there is exactly
+one source of truth: rename a parameter and the tool description follows.
 """
 
 import hashlib
