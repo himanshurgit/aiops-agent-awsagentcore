@@ -3,3 +3,11 @@ __pycache__/
 .ipynb_checkpoints/
 course_settings.json
 .venv/
+
+# JupyterLab / notebook run artifacts
+.virtual_documents/
+Untitled*.ipynb
+*-checkpoint.ipynb
+
+# OS
+.DS_Store

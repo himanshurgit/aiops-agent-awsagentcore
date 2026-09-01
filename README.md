@@ -160,7 +160,8 @@ All settings are environment variables, so the same code runs locally and hosted
 
 - AWS account where you can create IAM roles
 - AWS CLI configured (`aws sso login` recommended)
-- Bedrock **model access** granted for an Anthropic Claude model
+- Bedrock model access — serverless models are on by default; Anthropic needs a
+  one-time use-case form per account, submitted from the Bedrock model catalog
 - Python 3.10+
 - Node.js 20+ — notebook 03 only, for the AgentCore CLI
 - An EC2 instance is **optional**; dry-run mode covers every exercise
