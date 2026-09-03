@@ -85,13 +85,17 @@ def _guard(instance_id: str, action: str) -> tuple[dict | None, dict | None]:
 
 
 def _dry_run(action: str, details: dict) -> dict:
+    # NOTE: dry run is a setting on THIS PROCESS, not a property of the
+    # instance. Tagging the instance AIOPS_DRY_RUN=false does nothing.
     return {
         "dry_run": True,
         "action": action,
         "message": (
             f"DRY RUN - would {action} {details['instance_id']} "
             f"({details['name']}, currently {details['state']}). "
-            "No change was made. Set AIOPS_DRY_RUN=false to execute for real."
+            "The tag check passed; nothing was changed because dry run is on. "
+            "To execute for real: set config.DRY_RUN = False in the notebook, "
+            "or AIOPS_DRY_RUN=false in the agent's environment once deployed."
         ),
         "instance": details,
     }

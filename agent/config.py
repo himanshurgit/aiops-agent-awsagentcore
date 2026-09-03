@@ -17,7 +17,7 @@ AWS_REGION = os.environ.get("AWS_REGION", "us-east-1")
 
 # Bedrock model the agent reasons with. Use an inference-profile ID (the
 # "us." / "eu." / "global." prefixed form), not a bare base model ID.
-MODEL_ID = os.environ.get("AIOPS_MODEL_ID", "us.anthropic.claude-sonnet-5")
+MODEL_ID = os.environ.get("AIOPS_MODEL_ID", "us.amazon.nova-2-lite-v1:0")
 
 # SAFETY LAYER 1: when true, write tools describe what they WOULD do and
 # return without calling EC2. Defaults to true so a fresh clone cannot

@@ -146,7 +146,7 @@ All settings are environment variables, so the same code runs locally and hosted
 | Variable | Default | Purpose |
 | --- | --- | --- |
 | `AWS_REGION` | `us-east-1` | Region for Bedrock and the tool APIs |
-| `AIOPS_MODEL_ID` | `us.anthropic.claude-sonnet-5` | Bedrock **inference profile** ID (keep the `us.`/`eu.`/`global.` prefix) |
+| `AIOPS_MODEL_ID` | `us.amazon.nova-2-lite-v1:0` | Bedrock **inference profile** ID (keep the `us.`/`eu.`/`global.` prefix) |
 | `AIOPS_DRY_RUN` | `true` | When true, write tools simulate and change nothing |
 | `AIOPS_MANAGED_TAG_KEY` | `AIOpsManaged` | Tag key the write guard requires |
 | `AIOPS_MANAGED_TAG_VALUE` | `true` | Tag value the write guard requires |
