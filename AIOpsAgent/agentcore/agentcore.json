@@ -15,7 +15,11 @@
       "codeLocation": "app/AIOpsAgent/",
       "runtimeVersion": "PYTHON_3_14",
       "networkMode": "PUBLIC",
-      "protocol": "HTTP"
+      "protocol": "HTTP",
+      "envVars": [
+        { "name": "AIOPS_DRY_RUN",  "value": "true" },
+        { "name": "AIOPS_MODEL_ID", "value": "us.amazon.nova-2-lite-v1:0" }
+      ]
     }
   ],
   "memories": [],
