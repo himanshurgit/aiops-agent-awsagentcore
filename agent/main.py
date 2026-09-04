@@ -35,8 +35,7 @@ def build_agent() -> Agent:
 
 # AgentCore Runtime gives every session its own isolated microVM and routes a
 # session's requests back to the same one, so an in-process dict is enough to
-# remember a conversation. Anything that must outlive the session belongs in
-# AgentCore Memory instead.
+# remember a conversation. Nothing here outlives the session.
 _agents: dict[str, Agent] = {}
 
 
