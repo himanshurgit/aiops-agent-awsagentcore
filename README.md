@@ -53,6 +53,9 @@ committed here, so the repo works without running anything.
 
 ## Quick start
 
+Need Python or Node.js first? See
+[Installing Python 3.10+ and Node.js 20+](#installing-python-310-and-nodejs-20).
+
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
 pip install jupyterlab
@@ -165,6 +168,62 @@ All settings are environment variables, so the same code runs locally and hosted
 - Python 3.10+
 - Node.js 20+ — notebook 03 only, for the AgentCore CLI
 - An EC2 instance is **optional**; dry-run mode covers every exercise
+
+### Installing Python 3.10+ and Node.js 20+
+
+You need **Python** for notebooks 01 and 02, and **Node.js** only for notebook 03
+(the AgentCore CLI is an npm package). Check what you already have first — many
+machines ship with both:
+
+```bash
+python3 --version
+node --version
+```
+
+If both print versions that meet the minimums, you are set — go back to
+[Quick start](#quick-start). Otherwise install what is missing.
+
+**macOS** — install [Homebrew](https://brew.sh) first if you don't have it, then:
+
+```bash
+brew install python@3.12 node
+```
+
+The macOS system Python is old and managed by Apple; install your own rather than
+using it. The plain `node` formula tracks the current release, which is well past
+20 — you do not need a pinned `node@20`.
+
+**Windows** — from PowerShell, using the built-in package manager:
+
+```powershell
+winget install Python.Python.3.12 OpenJS.NodeJS.LTS
+```
+
+Close and reopen PowerShell afterwards so the new `PATH` takes effect. If you
+prefer the graphical installers, use [python.org/downloads](https://www.python.org/downloads/)
+and [nodejs.org](https://nodejs.org/) — on the Python installer, tick **"Add
+python.exe to PATH"** on the first screen. Note that on Windows the command is
+`python`, not `python3`.
+
+**Linux (Debian/Ubuntu)** — the distro's Node.js is usually too old, so take it
+from NodeSource:
+
+```bash
+sudo apt update && sudo apt install -y python3 python3-pip python3-venv
+curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+sudo apt install -y nodejs
+```
+
+**Verify** before moving on — both commands must print a version, and the numbers
+must be at least 3.10 and 20:
+
+```bash
+python3 --version && python3 -m venv --help > /dev/null && echo "python ok"
+node --version && npm --version
+```
+
+Everything after this point runs inside a virtual environment (`.venv`), so
+nothing you install for this course touches your system Python.
 
 ---
 
