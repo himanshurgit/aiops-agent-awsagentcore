@@ -53,8 +53,13 @@ committed here, so the repo works without running anything.
 
 ## Quick start
 
-Need Python or Node.js first? See
-[Installing Python 3.10+ and Node.js 20+](#installing-python-310-and-nodejs-20).
+First time on this machine? Install Git, the AWS CLI, Python, and Node.js —
+see [Installing the tools](#installing-git-the-aws-cli-python-and-nodejs).
+
+```bash
+git clone https://github.com/himanshurgit/aiops-agent-awsagentcore.git
+cd aiops-agent-awsagentcore
+```
 
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
@@ -162,62 +167,133 @@ All settings are environment variables, so the same code runs locally and hosted
 ## Prerequisites
 
 - AWS account where you can create IAM roles
-- AWS CLI configured (`aws sso login` recommended)
+- **Git** — to clone this repo
+- **AWS CLI v2**, configured (`aws sso login` recommended) — the notebooks and the
+  deploy steps both shell out to it
 - Bedrock model access — serverless models are on by default; Anthropic needs a
   one-time use-case form per account, submitted from the Bedrock model catalog
 - Python 3.10+
 - Node.js 20+ — notebook 03 only, for the AgentCore CLI
 - An EC2 instance is **optional**; dry-run mode covers every exercise
 
-### Installing Python 3.10+ and Node.js 20+
+### Installing Git, the AWS CLI, Python, and Node.js
 
-You need **Python** for notebooks 01 and 02, and **Node.js** only for notebook 03
-(the AgentCore CLI is an npm package). Check what you already have first — many
-machines ship with both:
+Four command-line tools, and you need them before notebook 01 will get past its
+first cell:
+
+| Tool | Why | Needed for |
+| --- | --- | --- |
+| **Git** | clone this repo | all notebooks |
+| **AWS CLI v2** | sign in to AWS and run the `aws ...` commands the lectures show | all notebooks |
+| **Python 3.10+** | run the notebooks and the agent | all notebooks |
+| **Node.js 20+** | the AgentCore CLI is an npm package | notebook 03 |
+
+Check what you already have first — many machines ship with some of these:
 
 ```bash
+git --version
+aws --version
 python3 --version
 node --version
 ```
 
-If both print versions that meet the minimums, you are set — go back to
-[Quick start](#quick-start). Otherwise install what is missing.
+If all four print versions that meet the minimums, skip ahead to
+[Configure the AWS CLI](#configure-the-aws-cli). Otherwise install what is missing.
 
 **macOS** — install [Homebrew](https://brew.sh) first if you don't have it, then:
 
 ```bash
-brew install python@3.12 node
+brew install git awscli python@3.12 node
 ```
 
 The macOS system Python is old and managed by Apple; install your own rather than
 using it. The plain `node` formula tracks the current release, which is well past
-20 — you do not need a pinned `node@20`.
+20 — you do not need a pinned `node@20`. macOS may already have `git` from the
+Xcode command line tools; the Homebrew one is newer and does no harm.
 
 **Windows** — from PowerShell, using the built-in package manager:
 
 ```powershell
-winget install Python.Python.3.12 OpenJS.NodeJS.LTS
+winget install Git.Git Amazon.AWSCLI Python.Python.3.12 OpenJS.NodeJS.LTS
 ```
 
-Close and reopen PowerShell afterwards so the new `PATH` takes effect. If you
-prefer the graphical installers, use [python.org/downloads](https://www.python.org/downloads/)
-and [nodejs.org](https://nodejs.org/) — on the Python installer, tick **"Add
-python.exe to PATH"** on the first screen. Note that on Windows the command is
-`python`, not `python3`.
+Close and reopen PowerShell afterwards so the new `PATH` takes effect. Prefer
+clicking through installers? See [Download the installers
+directly](#download-the-installers-directly) below — on the Python installer,
+tick **"Add python.exe to PATH"** on the first screen. Note that on Windows the
+command is `python`, not `python3`.
 
-**Linux (Debian/Ubuntu)** — the distro's Node.js is usually too old, so take it
-from NodeSource:
+**Linux (Debian/Ubuntu)** — Git and Python come from apt; the AWS CLI and Node.js
+do not, because the distro packages are v1 and too old respectively:
 
 ```bash
-sudo apt update && sudo apt install -y python3 python3-pip python3-venv
+sudo apt update && sudo apt install -y git python3 python3-pip python3-venv unzip curl
+```
+
+```bash
+curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o awscliv2.zip
+unzip -q awscliv2.zip && sudo ./aws/install && rm -rf awscliv2.zip aws
+```
+
+```bash
 curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
 sudo apt install -y nodejs
 ```
 
-**Verify** before moving on — both commands must print a version, and the numbers
-must be at least 3.10 and 20:
+On an ARM machine (Graviton, Raspberry Pi) swap `x86_64` for `aarch64` in the AWS
+CLI URL.
+
+#### Download the installers directly
+
+If you would rather not use a package manager, every tool ships an official
+installer. Download links below — take them only from these official sites:
+
+| Tool | macOS | Windows | Linux |
+| --- | --- | --- | --- |
+| **Git** | [git-scm.com/download/mac](https://git-scm.com/download/mac) | [64-bit installer](https://git-scm.com/download/win) | [git-scm.com/download/linux](https://git-scm.com/download/linux) |
+| **AWS CLI v2** | [AWSCLIV2.pkg](https://awscli.amazonaws.com/AWSCLIV2.pkg) | [AWSCLIV2.msi](https://awscli.amazonaws.com/AWSCLIV2.msi) | [x86_64 zip](https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip) · [aarch64 zip](https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip) |
+| **Python 3.10+** | [python.org/downloads/macos](https://www.python.org/downloads/macos/) | [python.org/downloads/windows](https://www.python.org/downloads/windows/) | [python.org/downloads/source](https://www.python.org/downloads/source/) |
+| **Node.js 20+** | [nodejs.org/en/download](https://nodejs.org/en/download) | [nodejs.org/en/download](https://nodejs.org/en/download) | [nodejs.org/en/download](https://nodejs.org/en/download) |
+
+All four landing pages: [git-scm.com/downloads](https://git-scm.com/downloads) ·
+[AWS CLI install guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) ·
+[python.org/downloads](https://www.python.org/downloads/) ·
+[nodejs.org/en/download](https://nodejs.org/en/download)
+
+On macOS and Linux, distro packages of Python are often too old and Node.js
+almost always is — if an installer gives you a version below the minimum, use the
+package-manager commands above instead. After any installer, close and reopen your
+terminal before running the checks below.
+
+#### Configure the AWS CLI
+
+Installing the CLI does not sign you in. Do that once, either way:
 
 ```bash
+aws configure sso      # recommended: IAM Identity Center, short-lived credentials
+```
+
+```bash
+aws configure          # or: a static access key pair
+```
+
+Then prove it worked. This must print your account number and identity ARN:
+
+```bash
+aws sts get-caller-identity
+```
+
+With SSO you will need to re-run `aws sso login` whenever the session expires —
+and if you log in *after* starting Jupyter, restart Jupyter so it picks up the
+refreshed credentials.
+
+#### Verify
+
+All four must print a version, and the numbers must be at least 3.10 and 20:
+
+```bash
+git --version
+aws --version
 python3 --version && python3 -m venv --help > /dev/null && echo "python ok"
 node --version && npm --version
 ```
