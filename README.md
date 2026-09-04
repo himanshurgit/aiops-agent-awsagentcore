@@ -24,11 +24,17 @@ Work through them in order. Together they take about 90 minutes.
 | --- | --- | --- |
 | [`01_concepts_and_setup.ipynb`](notebooks/01_concepts_and_setup.ipynb) | What an agent is, what AgentCore gives you, environment setup, model access | Local |
 | [`02_build_and_test_locally.ipynb`](notebooks/02_build_and_test_locally.ipynb) | The agent loop, `@tool` functions, the system prompt, three layers of safety, first real runs | Local, against real AWS |
-| [`03_deploy_to_agentcore_runtime.ipynb`](notebooks/03_deploy_to_agentcore_runtime.ipynb) | The AgentCore entrypoint, the CLI, deploy, IAM scoping, observability, Memory & Gateway, cleanup | AWS |
+| [`03_deploy_to_agentcore_runtime.ipynb`](notebooks/03_deploy_to_agentcore_runtime.ipynb) | The AgentCore entrypoint, the CLI, deploy, IAM scoping, observability, cleanup | AWS |
 
 Notebook 02 **writes** the files in `agent/` via `%%writefile`, so the code you
 read in the lecture is exactly the code that gets deployed. The files are also
 committed here, so the repo works without running anything.
+
+**Not covered here.** AgentCore also offers **Memory** (recall that outlives a
+session) and **Gateway** (turns existing Lambda functions, OpenAPI specs, and MCP
+servers into agent tools). Notebook 03 says what each one is for and when you would
+reach for it, then stops — doing either properly is a course of its own. Nothing in
+these notebooks turns them on, so nothing here bills for them.
 
 ---
 
