@@ -67,13 +67,50 @@ git clone https://github.com/himanshurgit/aiops-agent-awsagentcore.git
 cd aiops-agent-awsagentcore
 ```
 
+Everything runs in a virtual environment (`.venv`) that you create once and
+then activate in **every** terminal you open for this course — including the one
+notebook 03 asks you to open.
+
+**macOS / Linux**
+
 ```bash
-python3 -m venv .venv && source .venv/bin/activate
-pip install jupyterlab
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install jupyterlab ipykernel
+python -m ipykernel install --user --name aiops-venv --display-name "Python (aiops-venv)"
 jupyter lab notebooks/01_concepts_and_setup.ipynb
 ```
 
-To skip the lectures and just run the agent:
+**Windows (PowerShell)**
+
+```powershell
+py -3 -m venv .venv
+.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install jupyterlab ipykernel
+python -m ipykernel install --user --name aiops-venv --display-name "Python (aiops-venv)"
+jupyter lab notebooks/01_concepts_and_setup.ipynb
+```
+
+Your prompt should now start with `(.venv)`. When the notebook opens, pick
+**Python (aiops-venv)** from the kernel selector in the top-right — that last
+`ipykernel` line is what puts it there. If the notebook runs on a different
+interpreter than your terminal, you will install packages in one place and run
+`python main.py` in another, and notebook 03 will fail with
+`ModuleNotFoundError: No module named 'bedrock_agentcore'`.
+
+> **Python must be 3.10 or newer.** macOS ships 3.9 at `/usr/bin/python3`;
+> `bedrock-agentcore` will not install on it, and pip's error says *"Ignored the
+> following versions"* rather than naming the real problem. Use an explicit
+> interpreter if your default is older: `python3.12 -m venv .venv`.
+
+> **Anaconda users: do not install into `base`.** Run `conda deactivate` first.
+> Anaconda's base environment ships `aiobotocore`, which pins `botocore<1.36.4`,
+> so upgrading `boto3` prints a dependency-conflict error. A clean `.venv` has
+> neither package and neither problem.
+
+To skip the lectures and just run the agent (same `.venv`, still activated):
 
 ```bash
 pip install -r agent/requirements.txt
@@ -82,6 +119,9 @@ export AWS_REGION=us-east-1
 export AIOPS_DRY_RUN=true
 python main.py                    # serves http://localhost:8080/invocations
 ```
+
+On Windows PowerShell the two `export` lines are `$env:AWS_REGION="us-east-1"`
+and `$env:AIOPS_DRY_RUN="true"`.
 
 ```bash
 curl -N -X POST http://localhost:8080/invocations \
@@ -311,8 +351,9 @@ nothing you install for this course touches your system Python.
 
 ## Cost
 
-Under **$5** for the full three-notebook run. Bedrock tokens dominate; an idle
-deployed agent costs nothing. Notebook 03 ends with a teardown — please run it.
+Roughly **$0.50–$2.00** for the full three-notebook run, and under $5 in any
+case. Bedrock tokens dominate; an idle deployed agent costs nothing. Notebook 03
+ends with a teardown — please run it.
 
 ---
 
