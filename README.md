@@ -77,8 +77,7 @@ notebook 03 asks you to open.
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-pip install jupyterlab ipykernel
-python -m ipykernel install --user --name aiops-venv --display-name "Python (aiops-venv)"
+pip install jupyterlab
 jupyter lab notebooks/01_concepts_and_setup.ipynb
 ```
 
@@ -88,17 +87,18 @@ jupyter lab notebooks/01_concepts_and_setup.ipynb
 py -3 -m venv .venv
 .venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
-pip install jupyterlab ipykernel
-python -m ipykernel install --user --name aiops-venv --display-name "Python (aiops-venv)"
+pip install jupyterlab
 jupyter lab notebooks/01_concepts_and_setup.ipynb
 ```
 
-Your prompt should now start with `(.venv)`. When the notebook opens, pick
-**Python (aiops-venv)** from the kernel selector in the top-right — that last
-`ipykernel` line is what puts it there. If the notebook runs on a different
-interpreter than your terminal, you will install packages in one place and run
-`python main.py` in another, and notebook 03 will fail with
-`ModuleNotFoundError: No module named 'bedrock_agentcore'`.
+Your prompt should now start with `(.venv)`. Because JupyterLab was launched
+from that activated venv, the kernel it offers is the venv — when the notebook
+opens, check the selector in the top-right reads **Python 3 (ipykernel)**.
+
+Launching `jupyter lab` from a terminal where the venv is *not* active gives you
+a `Python 3 (ipykernel)` entry pointing at a different interpreter. You then
+install packages in one environment and run `python main.py` in another, and
+notebook 03 fails with `ModuleNotFoundError: No module named 'bedrock_agentcore'`.
 
 > **Python must be 3.10 or newer.** macOS ships 3.9 at `/usr/bin/python3`;
 > `bedrock-agentcore` will not install on it, and pip's error says *"Ignored the
