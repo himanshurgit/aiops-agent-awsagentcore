@@ -6,13 +6,16 @@
 #
 #   ./attach-policy.sh <execution-role-name>
 #
-# Find the role name with:  agentcore status
+# Find the role name with (plain `agentcore status` does NOT print it):
+#
+#   agentcore status --json \
+#     | jq -r '.deployedState.targets[].resources.runtimes[].roleArn | split("/")[-1]'
 
 set -euo pipefail
 
 ROLE_NAME="${1:-}"
 if [[ -z "$ROLE_NAME" ]]; then
-  echo "usage: $0 <execution-role-name>   (get it from 'agentcore status')" >&2
+  echo "usage: $0 <execution-role-name>   (get it from 'agentcore status --json')" >&2
   exit 1
 fi
 
