@@ -117,6 +117,7 @@ pip install -r agent/requirements.txt
 cd agent
 export AWS_REGION=us-east-1
 export AIOPS_DRY_RUN=true
+export AWS_PROFILE=<your sso profile>   # if you use named SSO profiles
 python main.py                    # serves http://localhost:8080/invocations
 ```
 
@@ -333,6 +334,10 @@ With SSO you will need to re-run `aws sso login` whenever the session expires �
 and if you log in *after* starting Jupyter, restart Jupyter so it picks up the
 refreshed credentials.
 
+If `aws sts get-caller-identity` prints an identity you don't recognise, or fails
+while a profile of yours is logged in, see
+[Credentials that look fine but aren't](#credentials-that-look-fine-but-arent).
+
 #### Verify
 
 All four must print a version, and the numbers must be at least 3.10 and 20:
@@ -346,6 +351,80 @@ node --version && npm --version
 
 Everything after this point runs inside a virtual environment (`.venv`), so
 nothing you install for this course touches your system Python.
+
+---
+
+## Troubleshooting
+
+Notebook 01 ends with a table covering Bedrock model access, throttling, and
+kernel problems. The two that come up most while running the agent locally
+(notebook 03, section 3) are here in full.
+
+### Credentials that look fine but aren't
+
+```
+data: {"error": "An error occurred (UnrecognizedClientException) when calling the
+ConverseStream operation: The security token included in the request is invalid"}
+```
+
+You ran `aws sso login`, it succeeded, and the agent still gets rejected. The
+login isn't the problem — the agent resolved *different* credentials. `boto3`
+stops at the first source it finds:
+
+1. `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` in the environment
+2. `~/.aws/credentials`
+3. `~/.aws/config` — where SSO profiles live
+
+A forgotten `[default]` block in `~/.aws/credentials` therefore outranks every SSO
+profile you have, however recently you logged in. Old static keys, or a session
+token that expired months ago, get sent to Bedrock and rejected. Confirm it
+outside the agent:
+
+```bash
+aws sts get-caller-identity
+```
+
+If that fails or names an identity you don't recognise, the agent was never the
+problem. Fix it by pointing at the profile you logged into:
+
+```bash
+aws sso login --profile <name>
+export AWS_PROFILE=<name>
+```
+
+or by deleting the stale `[default]` block from `~/.aws/credentials` so the SSO
+profile is reached at all. Then **restart whatever is running the agent** —
+`python main.py`, or Jupyter itself if you're in the notebooks. A kernel restart
+re-reads your code but not your shell environment.
+
+Two details worth internalising:
+
+- **`AWS_PROFILE` goes where the agent runs.** If you start the server in one
+  terminal and `curl` it from another, exporting the variable in the `curl`
+  terminal does nothing — `curl` never talks to AWS.
+- **SSO sessions expire**, often within hours. The same error, or
+  `ExpiredTokenException`, appears the moment yours does. Check with
+  `aws sts get-caller-identity` before assuming code broke.
+
+### Port 8080 already in use
+
+```
+[Errno 48] error while attempting to bind on address ('127.0.0.1', 8080):
+address already in use
+```
+
+On Linux this is `Errno 98`. An earlier `python main.py` is still running —
+often one started by a notebook cell whose kernel you later restarted, which
+leaves the server orphaned but alive. Find it and stop it:
+
+```bash
+lsof -nP -iTCP:8080 -sTCP:LISTEN    # shows the PID holding the port
+lsof -ti tcp:8080 | xargs kill      # stop it
+```
+
+`app.run()` does accept a `port` argument, but don't reach for it here: AgentCore
+Runtime always serves on 8080, and keeping the default is what makes your local
+run faithful to the deployed one.
 
 ---
 
